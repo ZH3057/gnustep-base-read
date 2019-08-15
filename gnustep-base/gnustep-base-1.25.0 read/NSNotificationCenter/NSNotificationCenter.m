@@ -805,64 +805,51 @@ static NSNotificationCenter *default_center = nil;
    * the notification is posted... odd, but the MacOS-X docs specify this.
    */
 
-  if (name)
-    {
+  if (name) {
       /*
        * Locate the map table for this name - create it if not present.
        */
       n = GSIMapNodeForKey(NAMED, (GSIMapKey)(id)name);
-      if (n == 0)
-	{
-	  m = mapNew(TABLE);
-	  /*
-	   * As this is the first observation for the given name, we take a
-	   * copy of the name so it cannot be mutated while in the map.
-	   */
-	  name = [name copyWithZone: NSDefaultMallocZone()];
-	  GSIMapAddPair(NAMED, (GSIMapKey)(id)name, (GSIMapVal)(void*)m);
-	  GS_CONSUMED(name)
-	}
-      else
-	{
-	  m = (GSIMapTable)n->value.ptr;
-	}
+      if (n == 0) {
+          m = mapNew(TABLE);
+          /*
+           * As this is the first observation for the given name, we take a
+           * copy of the name so it cannot be mutated while in the map.
+           */
+          name = [name copyWithZone: NSDefaultMallocZone()];
+          GSIMapAddPair(NAMED, (GSIMapKey)(id)name, (GSIMapVal)(void*)m);
+          GS_CONSUMED(name)
+      }  else {
+          m = (GSIMapTable)n->value.ptr;
+      }
 
       /*
        * Add the observation to the list for the correct object.
        */
       n = GSIMapNodeForSimpleKey(m, (GSIMapKey)object);
-      if (n == 0)
-	{
-	  o->next = ENDOBS;
-	  GSIMapAddPair(m, (GSIMapKey)object, (GSIMapVal)o);
-	}
-      else
-	{
-	  list = (Observation*)n->value.ptr;
-	  o->next = list->next;
-	  list->next = o;
-	}
+      if (n == 0) {
+          o->next = ENDOBS;
+          GSIMapAddPair(m, (GSIMapKey)object, (GSIMapVal)o);
+      } else {
+          list = (Observation*)n->value.ptr;
+          o->next = list->next;
+          list->next = o;
+      }
     }
-  else if (object)
-    {
+  else if (object) {
       n = GSIMapNodeForSimpleKey(NAMELESS, (GSIMapKey)object);
-      if (n == 0)
-	{
-	  o->next = ENDOBS;
-	  GSIMapAddPair(NAMELESS, (GSIMapKey)object, (GSIMapVal)o);
+      if (n == 0) {
+          o->next = ENDOBS;
+          GSIMapAddPair(NAMELESS, (GSIMapKey)object, (GSIMapVal)o);
+      } else {
+          list = (Observation*)n->value.ptr;
+          o->next = list->next;
+          list->next = o;
 	}
-      else
-	{
-	  list = (Observation*)n->value.ptr;
-	  o->next = list->next;
-	  list->next = o;
-	}
-    }
-  else
-    {
+  } else {
       o->next = WILDCARD;
       WILDCARD = o;
-    }
+  }
 
   unlockNCTable(TABLE);
 }

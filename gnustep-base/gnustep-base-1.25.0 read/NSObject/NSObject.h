@@ -68,6 +68,10 @@ extern "C" {
  * of the messages listed in this protocol to an object, and be safe
  * in assuming that the receiver can handle it.
  */
+
+/**
+ NSObject 协议 - 所有对象应支持的最小方法集合
+ */
 @protocol NSObject
     
     
@@ -76,6 +80,11 @@ extern "C" {
  * may return the class of the proxy target.  Use -isProxy to determine whether
  * the receiver is a proxy.  If you wish to find the real class of the
  * receiver, ignoring proxies, then use object_getClass().  
+ */
+    
+/**
+    返回接受者的类(类对象), 如果接受者是代理, 则返回代理对象的类 通过isProxy可以判断接受者是否为proxy，
+    如果想知道接受者的真实的类, 忽略代理, 使用方法object_getClass()
  */
 - (Class) class;
     
@@ -87,6 +96,11 @@ extern "C" {
  * superclass of the receiver's class, ignoring proxies, then use
  * class_getSuperclass(object_getClass()).
  */
+    
+
+/**
+    返回接受者的类的父类
+  */
 - (Class) superclass;
     
     
